@@ -1,50 +1,92 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560" role="img" aria-labelledby="title desc">
   <title id="title">Finding-level gaze target results</title>
-  <desc id="desc">Primary structured and learned localization results, paired inference, and record-dependence control.</desc>
+  <desc id="desc">Primary structured and learned localization results, paired inference, matched-record substitution, and patient-partition sensitivity.</desc>
   <defs>
     <style>
-      .heading { font: 600 25px Arial, Helvetica, sans-serif; fill: #1d2733; }
-      .value { font: 700 36px Arial, Helvetica, sans-serif; fill: #155f8f; }
-      .label { font: 18px Arial, Helvetica, sans-serif; fill: #354252; }
-      .small { font: 15px Arial, Helvetica, sans-serif; fill: #667383; }
-      .card { fill: #ffffff; stroke: #cbd3dc; stroke-width: 1.5; }
-      .rule { stroke: #dbe1e7; stroke-width: 1.5; }
-      .structured { fill: #a7b3bf; }
-      .learned { fill: #2b79a8; }
+      .eyebrow { font: 700 13px Arial, Helvetica, sans-serif; letter-spacing: 1.6px; fill: #2f6f8f; }
+      .heading { font: 700 25px Arial, Helvetica, sans-serif; fill: #172230; }
+      .section { font: 700 19px Arial, Helvetica, sans-serif; fill: #172230; }
+      .value { font: 700 34px Arial, Helvetica, sans-serif; fill: #216b8f; }
+      .label { font: 16px Arial, Helvetica, sans-serif; fill: #405165; }
+      .small { font: 14px Arial, Helvetica, sans-serif; fill: #66778a; }
+      .micro { font: 12px Arial, Helvetica, sans-serif; fill: #7b8999; }
+      .card { fill: #ffffff; stroke: #d7e0e8; stroke-width: 1.5; }
+      .track { stroke: #e5eaf0; stroke-width: 7; stroke-linecap: round; }
+      .structured { fill: #a9b7c4; }
+      .learned { fill: #287da3; }
+      .rule { stroke: #e2e7ec; stroke-width: 1.5; }
     </style>
   </defs>
-  <rect width="1200" height="420" rx="14" fill="#f4f7f9"/>
-  <text x="52" y="51" class="heading">Results at a glance</text>
-  <text x="1148" y="50" text-anchor="end" class="small">987 instances · 398 patients · five optimizer seeds</text>
+  <rect width="1400" height="560" rx="22" fill="#f6f8fb"/>
+  <text x="48" y="43" class="eyebrow">REFERENCE STUDY</text>
+  <text x="48" y="76" class="heading">Evidence at a glance</text>
+  <text x="1352" y="70" text-anchor="end" class="small">987 instances · 398 patients · five optimizer seeds</text>
 
-  <rect x="42" y="78" width="350" height="292" rx="11" class="card"/>
-  <text x="70" y="116" class="heading">Primary comparison</text>
-  <text x="70" y="154" class="small">Pointing-game accuracy</text>
-  <rect x="70" y="172" width="221.0" height="22" rx="4" class="structured"/>
-  <rect x="70" y="207" width="230.9" height="22" rx="4" class="learned"/>
-  <text x="360" y="189" text-anchor="end" class="label">0.789</text>
-  <text x="360" y="224" text-anchor="end" class="label">0.825</text>
-  <text x="70" y="190" class="small">Structured</text>
-  <text x="70" y="225" class="small" fill="#ffffff">Learned</text>
-  <line x1="70" y1="252" x2="364" y2="252" class="rule"/>
-  <text x="70" y="283" class="small">IoU: 0.355 → 0.358</text>
-  <text x="70" y="316" class="small">Shared renderer and calibration protocol</text>
+  <rect x="40" y="100" width="580" height="400" rx="17" class="card"/>
+  <text x="70" y="139" class="section">Primary localization</text>
+  <text x="70" y="167" class="small">Common renderer, patient split, and validation protocol</text>
 
-  <rect x="425" y="78" width="350" height="292" rx="11" class="card"/>
-  <text x="453" y="116" class="heading">Paired inference</text>
-  <text x="453" y="169" class="value">+3.53 pp</text>
-  <text x="453" y="202" class="label">Peak-localization gain</text>
-  <line x1="453" y1="226" x2="747" y2="226" class="rule"/>
-  <text x="453" y="258" class="small">95% CI: 0.67 to 6.34 pp</text>
-  <text x="453" y="290" class="small">IoU difference: +0.35 pp</text>
-  <text x="453" y="322" class="small">Patient-cluster bootstrap, 10,000 resamples</text>
+  <text x="70" y="211" class="label">Pointing-game accuracy</text>
+  <rect x="70" y="232" width="480" height="22" rx="6" fill="#eef2f5"/>
+  <rect x="70" y="232" width="378.9" height="22" rx="6" class="structured"/>
+  <rect x="70" y="270" width="480" height="22" rx="6" fill="#eef2f5"/>
+  <rect x="70" y="270" width="395.8" height="22" rx="6" class="learned"/>
+  <text x="82" y="248" class="small" style="fill:#263849;font-weight:600">Structured · 3.0 s</text>
+  <text x="82" y="286" class="small" style="fill:#ffffff;font-weight:600">Learned · five-seed mean</text>
+  <text x="565" y="248" text-anchor="end" class="label">0.7893</text>
+  <text x="565" y="286" text-anchor="end" class="label">0.8245</text>
 
-  <rect x="808" y="78" width="350" height="292" rx="11" class="card"/>
-  <text x="836" y="116" class="heading">Record dependence</text>
-  <text x="836" y="169" class="value">−28.16 pp</text>
-  <text x="836" y="202" class="label">With matched other-patient records</text>
-  <line x1="836" y1="226" x2="1130" y2="226" class="rule"/>
-  <text x="836" y="258" class="small">IoU reduction: 7.69 pp</text>
-  <text x="836" y="290" class="small">Eligible cohort: 948 instances</text>
-  <text x="836" y="322" class="small">Partition PG gains: 1.67–3.56 pp</text>
+  <line x1="70" y1="321" x2="590" y2="321" class="rule"/>
+  <text x="70" y="358" class="label">IoU</text>
+  <rect x="70" y="378" width="480" height="18" rx="5" fill="#eef2f5"/>
+  <rect x="70" y="378" width="170.4" height="18" rx="5" class="structured"/>
+  <rect x="70" y="411" width="480" height="18" rx="5" fill="#eef2f5"/>
+  <rect x="70" y="411" width="172.0" height="18" rx="5" class="learned"/>
+  <text x="565" y="393" text-anchor="end" class="label">0.3549</text>
+  <text x="565" y="426" text-anchor="end" class="label">0.3584</text>
+  <text x="70" y="465" class="small">Peak localization improves; thresholded overlap remains similar.</text>
+
+  <rect x="650" y="100" width="350" height="190" rx="17" class="card"/>
+  <text x="678" y="136" class="eyebrow">PAIRED INFERENCE</text>
+  <text x="678" y="183" class="value">+3.53 pp</text>
+  <text x="678" y="211" class="label">pointing-accuracy difference</text>
+  <line x1="678" y1="231" x2="972" y2="231" class="rule"/>
+  <text x="678" y="260" class="small">95% CI 0.67 to 6.34 pp</text>
+
+  <rect x="650" y="310" width="350" height="190" rx="17" class="card"/>
+  <text x="678" y="346" class="eyebrow">RECORD SUBSTITUTION</text>
+  <text x="678" y="393" class="value">−28.16 pp</text>
+  <text x="678" y="421" class="label">with matched other-patient records</text>
+  <line x1="678" y1="441" x2="972" y2="441" class="rule"/>
+  <text x="678" y="470" class="small">IoU reduction 7.69 pp · n=948</text>
+
+  <rect x="1030" y="100" width="330" height="400" rx="17" class="card"/>
+  <text x="1058" y="139" class="section">Patient partitions</text>
+  <text x="1058" y="166" class="small">Learned − structured pointing</text>
+  <text x="1063" y="203" class="small">0</text>
+  <line x1="1100" y1="198" x2="1240" y2="198" class="track"/>
+  <circle cx="1218.8" cy="198" r="7" fill="#287da3"/>
+  <text x="1320" y="203" text-anchor="end" class="small">+3.52 pp</text>
+  <text x="1063" y="251" class="small">1</text>
+  <line x1="1100" y1="246" x2="1240" y2="246" class="track"/>
+  <circle cx="1190.8" cy="246" r="7" fill="#287da3"/>
+  <text x="1320" y="251" text-anchor="end" class="small">+2.69 pp</text>
+  <text x="1063" y="299" class="small">2</text>
+  <line x1="1100" y1="294" x2="1240" y2="294" class="track"/>
+  <circle cx="1220.2" cy="294" r="7" fill="#287da3"/>
+  <text x="1320" y="299" text-anchor="end" class="small">+3.56 pp</text>
+  <text x="1063" y="347" class="small">3</text>
+  <line x1="1100" y1="342" x2="1240" y2="342" class="track"/>
+  <circle cx="1204.0" cy="342" r="7" fill="#287da3"/>
+  <text x="1320" y="347" text-anchor="end" class="small">+3.08 pp</text>
+  <text x="1063" y="395" class="small">4</text>
+  <line x1="1100" y1="390" x2="1240" y2="390" class="track"/>
+  <circle cx="1156.4" cy="390" r="7" fill="#287da3"/>
+  <text x="1320" y="395" text-anchor="end" class="small">+1.67 pp</text>
+  <text x="1100" y="454" class="micro">0</text>
+  <text x="1240" y="454" text-anchor="end" class="micro">+4 pp</text>
+  <line x1="1058" y1="471" x2="1332" y2="471" class="rule"/>
+  <text x="1058" y="488" class="micro">Each partition repeats the five-seed pipeline.</text>
+
+  <text x="700" y="536" text-anchor="middle" class="small">Patient-cluster bootstrap · 10,000 resamples · complete-precision values in results/study-results.json</text>
 </svg>

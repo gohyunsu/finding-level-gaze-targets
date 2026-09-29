@@ -208,16 +208,41 @@ def validate_release_tree(results_path: Path) -> tuple[int, list[str]]:
 
     manifest_path = ROOT / "assets" / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    asset = ROOT / "assets" / manifest["summary"]["filename"]
     passed += require(
         manifest["source_sha256"] == sha256(results_path),
-        "README asset was rendered from different results",
+        "README assets were rendered from different results",
         failures,
     )
-    passed += require(manifest["summary"]["sha256"] == sha256(asset), "README asset checksum changed", failures)
+    expected_assets = {"method_overview", "results_overview"}
+    passed += require(
+        set(manifest.get("assets", {})) == expected_assets,
+        "README asset manifest is incomplete",
+        failures,
+    )
+    for name, entry in manifest.get("assets", {}).items():
+        asset = ROOT / "assets" / entry["filename"]
+        passed += require(asset.is_file(), f"README asset is missing: {name}", failures)
+        if asset.is_file():
+            passed += require(
+                entry["sha256"] == sha256(asset),
+                f"README asset checksum changed: {name}",
+                failures,
+            )
+        passed += require(
+            entry.get("data_free") is True,
+            f"README asset is not marked data-free: {name}",
+            failures,
+        )
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    for token in ("987 mention-linked finding instances", "398 patients", "0.7893", "0.8245", "assets/results_overview.svg"):
+    for token in (
+        "987 mention-linked finding instances",
+        "398 patients",
+        "0.7893",
+        "0.8245",
+        "assets/method_overview.svg",
+        "assets/results_overview.svg",
+    ):
         passed += require(token in readme, f"README is missing {token!r}", failures)
     return passed, failures
 

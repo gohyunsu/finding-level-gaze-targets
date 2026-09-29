@@ -12,66 +12,93 @@ Seoul National University · OUTTA
 
 [![CI](https://github.com/gohyunsu/finding-level-gaze-targets/actions/workflows/ci.yml/badge.svg)](https://github.com/gohyunsu/finding-level-gaze-targets/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab.svg)](pyproject.toml)
-[![Results](https://img.shields.io/badge/Results-machine--readable-4c566a.svg)](results/study-results.json)
+[![Results](https://img.shields.io/badge/results-machine--readable-287da3.svg)](results/study-results.json)
+[![Reproducibility](https://img.shields.io/badge/reproducibility-verified-2f855a.svg)](docs/REPRODUCIBILITY.md)
 
-[Overview](#overview) · [Method](#method) · [Results](#results) · [Reproduce](#reproduction) · [Data](#data-boundary) · [Citation](#citation)
+[Overview](#overview) · [Method](#method) · [Results](#results) · [Quick start](#quick-start) · [Reproduction](#reproducing-the-study) · [Citation](#citation)
 
 </div>
 
----
+<p align="center">
+  <img src="assets/method_overview.svg" alt="Graphical abstract of the finding-level gaze target pipeline" width="1100">
+</p>
+
+<p align="center"><em>A data-free graphical abstract: one complete reading is reweighted into a distinct localization target for each finding.</em></p>
 
 ## Overview
 
-A complete radiology reading can contain several reported findings but only one
-recorded scanpath. This project constructs a separate localization target for
-each finding by assigning finding-conditioned weights to the observed fixations
-and rendering them as a continuous map.
+A radiology reading may report several findings while eye tracking supplies one
+complete scanpath. This project resolves that mismatch by assigning
+finding-conditioned weights to the observed fixations and rendering a separate,
+continuous localization target for every linked finding.
 
-Structured and learned selectors are compared under the same rendering,
-calibration, patient split, and evaluation protocol. Neither selector receives
-radiograph pixels. The released implementation covers the primary five-seed
-comparison, structured baselines, temporal-window selection, feature controls,
-matched-record substitution, training-size sensitivity, and patient-partition
-sensitivity reported in the associated IEEE MedAI 2026 study.
+The reference study compares transparent structured cues with a compact learned
+selector under the same renderer, calibration, patient split, and evaluation
+protocol. The selector never receives radiograph pixels; its role is to identify
+which fixations in the recorded reading are most relevant to the target finding.
 
-<p align="center">
-  <img src="assets/results_overview.svg" alt="Principal results for finding-level gaze target construction" width="920">
-</p>
+| Finding-level output | Controlled comparison | Reproducible evidence |
+|---|---|---|
+| Separate target maps from a shared scanpath | Structured and learned selectors share downstream processing | Frozen study configuration, machine-readable results, tests, and CI |
+| Mention-linked temporal context | Patient-level splits and clustered inference | Five optimizer seeds and five patient partitions remain distinct |
+| Continuous 64×64 localization maps | Validation-selected calibration and lookback | Public, identifier-free aggregate registry |
 
 ## Method
 
-```mermaid
-flowchart LR
-    A[Complete scanpath] --> D[Finding-conditioned selector]
-    B[Resolved positive mention] --> D
-    C[Finding identity] --> D
-    D --> E[Fixation weights]
-    E --> F[Shared renderer]
-    F --> G[Finding-level gaze target]
-    H[Training annotations] --> I[Anatomical prior / learned fitting]
-    I --> D
-```
+### 1. Link findings to the reading
 
-The structured selector combines four cues:
+Positive report mentions are resolved to finding labels and sentence timing.
+The aligned record retains fixation position, timing, duration, and motion
+features. Longer temporal windows are reconstructed from sentence boundaries
+and verified against the cached 1.5-second window.
 
-- a finding-specific anatomical prior estimated from training annotations;
-- support from fixations in the target reading;
-- a linked-mention temporal gate; and
-- directional terms such as left/right and upper/lower.
+### 2. Reweight the complete scanpath
 
-The learned selector uses a single scaled dot-product attention layer. Its query
-combines the finding identity and ten mention indicators; each fixation key uses
-continuous temporal and kinematic features plus Fourier-encoded position. Both
-selectors produce weights over the original scanpath, followed by the same
-64×64 rendering and validation-selected calibration.
+Two selector families operate on the same aligned record:
 
-See [Method and results](docs/RESULTS.md) for the estimator and analysis mapping.
+- **Structured selector:** combines a training-derived anatomical prior,
+  target-record scanpath support, a linked-mention temporal gate, and directional
+  terms such as left/right and upper/lower.
+- **Learned selector:** uses one scaled dot-product attention layer. The query
+  combines finding identity and mention indicators; fixation keys combine
+  temporal, kinematic, and Fourier-encoded position features.
+
+### 3. Render and calibrate the target
+
+Both selectors produce weights over the original fixations. A shared renderer
+converts those weights into a 64×64 map, and all calibration decisions are made
+on validation data. This isolates the contribution of fixation selection from
+the effects of rendering or post-processing.
+
+Implementation-to-result mappings are documented in
+[`docs/RESULTS.md`](docs/RESULTS.md).
 
 ## Results
 
+<p align="center">
+  <img src="assets/results_overview.svg" alt="Primary results, paired inference, record substitution, and patient-partition sensitivity" width="1100">
+</p>
+
+<p align="center"><em>All displayed values are generated from the released aggregate registry.</em></p>
+
 The primary test cohort contains **987 mention-linked finding instances from
-398 patients**. Learned metrics average optimizer seeds 0–4 within each test
-instance before patient-cluster inference.
+398 patients**. Learned metrics first average optimizer seeds 0–4 within each
+test instance; inference then resamples patients while retaining all instances
+belonging to each patient.
+
+Three results define the main readout:
+
+1. The learned selector reaches **0.8245 pointing accuracy**, compared with
+   **0.7893** for the validation-selected 3.0-second structured selector.
+2. The paired pointing-accuracy difference is **+0.0353** (95% CI
+   0.0067–0.0634); the IoU difference is **+0.0035** (95% CI
+   −0.0034–0.0102), indicating similar thresholded spatial overlap.
+3. Substituting exact-matched records from other patients reduces pointing
+   accuracy by **0.2816** and IoU by **0.0769** across 948 eligible instances,
+   showing that matched labels and indicators do not reproduce the paired record.
+
+<details>
+<summary><strong>Complete numerical tables</strong></summary>
 
 ### Primary comparison
 
@@ -79,11 +106,6 @@ instance before patient-cluster inference.
 |---|---:|---:|
 | Validation-selected 3.0-s structured selector | 0.7893 | 0.3549 |
 | Ten-indicator learned selector, five-seed mean | **0.8245** | **0.3584** |
-
-The learned-minus-structured difference is **+0.0353** for pointing accuracy
-(95% CI 0.0067–0.0634) and **+0.0035** for IoU (95% CI −0.0034–0.0102).
-The evidence supports a modest improvement in peak localization; thresholded
-spatial overlap is similar.
 
 ### Feature and record controls
 
@@ -96,11 +118,6 @@ spatial overlap is similar.
 | Temporal/kinematic features permuted | 0.6833 | 0.2976 |
 | Spatial indicators masked | 0.7495 | 0.3068 |
 
-Replacing a target record with exact-matched records from other patients lowers
-pointing accuracy by 0.2816 and IoU by 0.0769 on 948 eligible instances. This
-control tests whether finding and spatial-indicator matching can reproduce the
-paired record; it does not isolate a single causal component.
-
 ### Training-size sensitivity
 
 | Training fraction | Learned pointing | Structured pointing | Learned IoU | Structured IoU |
@@ -112,28 +129,31 @@ paired record; it does not isolate a single causal component.
 
 Across five patient partitions, the learned selector's pointing-accuracy gain
 ranges from 0.0167 to 0.0356. Complete-precision values and estimator metadata
-are stored in [`results/study-results.json`](results/study-results.json).
+are available in [`results/study-results.json`](results/study-results.json).
 
-## Experimental design
+</details>
+
+## Study design
 
 | Component | Specification |
 |---|---|
-| Dataset | REFLACX Phase 3 on MIMIC-CXR |
+| Dataset | REFLACX 1.0.0 on MIMIC-CXR 2.0.0 |
 | Mention-linked split | 1,895 train / 547 validation / 987 test |
 | Split and resampling unit | Patient |
 | Primary test patients | 398 |
 | Optimizer seeds | 0, 1, 2, 3, 4 |
 | Bootstrap | 10,000 patient-cluster resamples |
 | Metrics | Pointing-game accuracy and IoU |
-| Structured lookback | Validation-selected from 0.5–3.0 s |
+| Structured lookback | Validation-selected from 0.5–3.0 seconds |
 
 Optimizer-seed variation, patient-partition variation, and patient-subsample
 variation are retained as separate axes. The training-size analysis averages
 five optimizer seeds within each of five nested patient-subsample chains.
 
-## Reproduction
+## Quick start
 
-### Install and run data-free checks
+The public result contract and README figures can be checked without access to
+clinical data:
 
 ```bash
 git clone https://github.com/gohyunsu/finding-level-gaze-targets.git
@@ -148,7 +168,16 @@ python scripts/render_readme_assets.py --check
 pytest -q
 ```
 
-### Run analyses from credentialed data
+Inspect the released registry from the command line:
+
+```bash
+finding-level-gaze-results --summary
+```
+
+## Reproducing the study
+
+Credentialed access to REFLACX and MIMIC-CXR is required for model reruns.
+Keep source data and generated artifacts outside the repository.
 
 ```bash
 # Build the aligned scanpath/mention cache
@@ -159,36 +188,37 @@ python -m finding_level_gaze_targets.maps.core \
 python scripts/run_analysis.py structured-comparison \
   --cache /work/cache/align.pt --raw-root /path/to/reflacx
 
-# Five-seed primary comparison and paired inference
+# Run the five-seed primary comparison and paired inference
 python scripts/run_analysis.py primary \
   --cache /work/cache/align.pt --raw-root /path/to/reflacx \
   --epochs 40 --seeds 0,1,2,3,4 --split-seed 0
 ```
 
-The [reproduction guide](docs/REPRODUCIBILITY.md) documents the remaining
-controls, partition runs, and strict aggregation layout.
+The [reproduction guide](docs/REPRODUCIBILITY.md) provides the complete command
+matrix for architecture selection, patient partitions, feature controls,
+record substitution, and training-size sensitivity.
 
-## Repository map
+## Repository structure
 
 ```text
 .
-├── assets/                         README result visualization
+├── assets/                         generated graphical abstract and result figure
 ├── configs/study.json              frozen study definition
 ├── docs/                            result and reproduction guides
 ├── results/study-results.json      machine-readable reported values
-├── scripts/                         analysis and asset entry points
+├── scripts/                         analysis and figure entry points
 ├── src/finding_level_gaze_targets/ reusable implementation
 ├── tests/                           data-free contract tests
-└── verify_results.py               independent result validator
+└── verify_results.py               independent release validator
 ```
 
 ## Data boundary
 
-REFLACX 1.0.0 and MIMIC-CXR 2.0.0 are available through PhysioNet under
+REFLACX 1.0.0 and MIMIC-CXR 2.0.0 are distributed through PhysioNet under
 credentialed access. This repository contains no radiographs, reports, patient
-identifiers, patient-level predictions, derived data caches, model checkpoints,
-or manuscript PDF. The qualitative radiographs used in the paper are also not
-redistributed here.
+identifiers, patient-level predictions, derived caches, checkpoints, or
+manuscript PDF. The README figures are synthetic or aggregate-only and contain
+no clinical records.
 
 ## Citation
 
@@ -201,4 +231,5 @@ redistributed here.
 }
 ```
 
-Machine-readable metadata are provided in [`CITATION.cff`](CITATION.cff).
+Machine-readable citation metadata are provided in
+[`CITATION.cff`](CITATION.cff).

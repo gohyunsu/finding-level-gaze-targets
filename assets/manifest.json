@@ -1,8 +1,17 @@
 {
+  "schema_version": "1.0",
   "source": "results/study-results.json",
   "source_sha256": "b2a5bbef2bf9d38cb5cf0f4178ab14f0012250fc92ac7d2deda3c685d573b51d",
-  "summary": {
-    "filename": "results_overview.svg",
-    "sha256": "b92e3afa906b7eef2782dbf549800340f810cf0b4ed7bb7db51d5e512fb04566"
+  "assets": {
+    "method_overview": {
+      "filename": "method_overview.svg",
+      "sha256": "c1a99ea8c275b50f7d01962b8e9af057c1a2bc01a5b01b9680ef0af7f22e65ff",
+      "data_free": true
+    },
+    "results_overview": {
+      "filename": "results_overview.svg",
+      "sha256": "67a3f2bdcca5753b68f421619a39ebff1d51ee82aaaa95ab58cd434db84e78eb",
+      "data_free": true
+    }
   }
 }
