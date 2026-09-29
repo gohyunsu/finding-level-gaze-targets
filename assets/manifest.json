@@ -3,10 +3,15 @@
   "source": "results/study-results.json",
   "source_sha256": "b2a5bbef2bf9d38cb5cf0f4178ab14f0012250fc92ac7d2deda3c685d573b51d",
   "assets": {
-    "method_overview": {
-      "filename": "method_overview.svg",
-      "sha256": "c1a99ea8c275b50f7d01962b8e9af057c1a2bc01a5b01b9680ef0af7f22e65ff",
-      "data_free": true
+    "paper_figure_1": {
+      "filename": "paper_figure_1.png",
+      "sha256": "6f39db5251792ed3c478096426212b2631950673c0890a3d61af30c3207bd4d5",
+      "publication_figure": true
+    },
+    "paper_figure_2": {
+      "filename": "paper_figure_2.png",
+      "sha256": "4779aa22927076f7e771c91f2cbd43de32a0908a65eb578a823e09f692fdcf84",
+      "publication_figure": true
     },
     "results_overview": {
       "filename": "results_overview.svg",

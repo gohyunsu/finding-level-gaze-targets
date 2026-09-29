@@ -34,7 +34,8 @@ def test_configuration_registry_readme_and_entry_points_agree():
     assert "398 patients" in readme
     assert "0.7893" in readme and "0.3549" in readme
     assert "0.8245" in readme and "0.3584" in readme
-    assert "assets/method_overview.svg" in readme
+    assert "assets/paper_figure_1.png" in readme
+    assert "assets/paper_figure_2.png" in readme
     assert "assets/results_overview.svg" in readme
 
     for module in analyses.values():

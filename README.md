@@ -20,10 +20,19 @@ Seoul National University · OUTTA
 </div>
 
 <p align="center">
-  <img src="assets/method_overview.svg" alt="Graphical abstract of the finding-level gaze target pipeline" width="1100">
+  <img src="assets/paper_figure_1.png" alt="Paper Figure 1: finding-level gaze target construction from a complete reading" width="1100">
 </p>
 
-<p align="center"><em>A data-free graphical abstract: one complete reading is reweighted into a distinct localization target for each finding.</em></p>
+<p align="center"><strong>Figure 1.</strong> Finding-level gaze target construction from a complete REFLACX reading.</p>
+
+A reported finding and indicators extracted from its linked positive mentions
+are paired with the recorded scanpath. A structured or learned selector assigns
+finding-specific weights to the fixations. The shared rendering pipeline
+produces a continuous map and calibrated binary mask (white dashed contour),
+evaluated against the annotated region (green contour). The radiograph is shown
+for context; image pixels are not inputs to either selector. Training
+annotations estimate the anatomical prior and fit the learned selector, while
+test reference regions are reserved for evaluation.
 
 ## Overview
 
@@ -96,6 +105,22 @@ Three results define the main readout:
 3. Substituting exact-matched records from other patients reduces pointing
    accuracy by **0.2816** and IoU by **0.0769** across 948 eligible instances,
    showing that matched labels and indicators do not reproduce the paired record.
+
+### Qualitative comparison
+
+<p align="center">
+  <img src="assets/paper_figure_2.png" alt="Paper Figure 2: structured and learned localization maps for two findings" width="1100">
+</p>
+
+<p align="center"><strong>Figure 2.</strong> Examples from the primary comparison: (a) pleural abnormality and (b) lung nodule or mass.</p>
+
+In both cases, the validation-selected 3.0-second structured map peaks outside
+the reference region, whereas the mean learned map peaks inside. Structured and
+five-seed mean learned IoU are 0.006 and 0.386 in (a), and 0.222 and 0.272 in
+(b). Purple–yellow denotes continuous map intensity, green contours mark the
+reference regions, and white dashed contours show the calibrated structured
+mask or the learned majority-vote mask across five seed-specific calibrated
+masks. Learned maps are averaged across the five seeds.
 
 <details>
 <summary><strong>Complete numerical tables</strong></summary>
@@ -202,7 +227,7 @@ record substitution, and training-size sensitivity.
 
 ```text
 .
-├── assets/                         generated graphical abstract and result figure
+├── assets/                         paper figures and generated result overview
 ├── configs/study.json              frozen study definition
 ├── docs/                            result and reproduction guides
 ├── results/study-results.json      machine-readable reported values
@@ -215,10 +240,10 @@ record substitution, and training-size sensitivity.
 ## Data boundary
 
 REFLACX 1.0.0 and MIMIC-CXR 2.0.0 are distributed through PhysioNet under
-credentialed access. This repository contains no radiographs, reports, patient
-identifiers, patient-level predictions, derived caches, checkpoints, or
-manuscript PDF. The README figures are synthetic or aggregate-only and contain
-no clinical records.
+credentialed access. The repository includes the two de-identified, overlaid
+figures shown in the paper, but does not distribute the complete manuscript PDF,
+source radiographs, source reports, patient identifiers, patient-level
+predictions, derived caches, or checkpoints.
 
 ## Citation
 

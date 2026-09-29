@@ -213,7 +213,7 @@ def validate_release_tree(results_path: Path) -> tuple[int, list[str]]:
         "README assets were rendered from different results",
         failures,
     )
-    expected_assets = {"method_overview", "results_overview"}
+    expected_assets = {"paper_figure_1", "paper_figure_2", "results_overview"}
     passed += require(
         set(manifest.get("assets", {})) == expected_assets,
         "README asset manifest is incomplete",
@@ -228,9 +228,13 @@ def validate_release_tree(results_path: Path) -> tuple[int, list[str]]:
                 f"README asset checksum changed: {name}",
                 failures,
             )
+        asset_type_is_declared = (
+            entry.get("data_free") is True
+            or entry.get("publication_figure") is True
+        )
         passed += require(
-            entry.get("data_free") is True,
-            f"README asset is not marked data-free: {name}",
+            asset_type_is_declared,
+            f"README asset type is not declared: {name}",
             failures,
         )
 
@@ -240,7 +244,8 @@ def validate_release_tree(results_path: Path) -> tuple[int, list[str]]:
         "398 patients",
         "0.7893",
         "0.8245",
-        "assets/method_overview.svg",
+        "assets/paper_figure_1.png",
+        "assets/paper_figure_2.png",
         "assets/results_overview.svg",
     ):
         passed += require(token in readme, f"README is missing {token!r}", failures)
